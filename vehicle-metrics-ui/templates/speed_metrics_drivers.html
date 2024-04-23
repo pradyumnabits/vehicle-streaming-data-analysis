@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Speed Metrics by Drivers</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f7f7f7;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 20px;
+            color: #333;
+        }
+
+        table {
+            width: 80%;
+            margin: 20px auto;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 10px;
+            border: 1px solid #ccc;
+            text-align: center;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            color: #333;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #e9e9e9;
+        }
+
+        .home-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .home-link a {
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .home-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Speed Metrics by Drivers</h1>
+    <div class="home-link">
+        <a href="/">Go To Home Page</a>
+    </div>
+    <table>
+        <tr>
+            <th>Driver ID</th>
+            <th>Speeding Count</th>
+            <th>Last Timestamp</th>
+        </tr>
+        {% for item in data %}
+        <tr>
+            <td>{{ item.driver_id }}</td>
+            <td>{{ item.speeding_count }}</td>
+            <td>{{ item.last_timestamp }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+
+</html>

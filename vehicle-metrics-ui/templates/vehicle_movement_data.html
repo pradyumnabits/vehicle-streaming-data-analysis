@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vehicle Movement Data</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f7f7f7;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 20px;
+            color: #333;
+        }
+
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 10px;
+            border: 1px solid #ccc;
+            text-align: center;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            color: #333;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #e9e9e9;
+        }
+
+        .home-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .home-link a {
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .home-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Vehicle Movement Data</h1>
+    <div class="home-link">
+        <a href="/">Go To Home Page</a>
+    </div>
+    <table>
+        <tr>
+            <th>Driver ID</th>
+            <th>Vehicle ID</th>
+            <th>Route</th>
+            <th>Speed</th>
+            <th>Trip ID</th>
+            <th>Timestamp</th>
+            <th>Longitude</th>
+            <th>Latitude</th>
+            <th>Fuel Level</th>
+            <th>Tire Pressure</th>
+            <th>Driver Condition</th>
+            <th>Incident Type</th>
+            <th>Weather Condition</th>
+            <th>Traffic Condition</th>
+        </tr>
+        {% for item in data %}
+        <tr>
+            <td>{{ item.driver_id }}</td>
+            <td>{{ item.vehicle_id }}</td>
+            <td>{{ item.route }}</td>
+            <td>{{ item.speed }}</td>
+            <td>{{ item.trip_id }}</td>
+            <td>{{ item.timestamp }}</td>
+            <td>{{ item.longitude }}</td>
+            <td>{{ item.latitude }}</td>
+            <td>{{ item.fuel_level }}</td>
+            <td>{{ item.tire_pressure }}</td>
+            <td>{{ item.driver_condition }}</td>
+            <td>{{ item.incident_type }}</td>
+            <td>{{ item.weather_condition }}</td>
+            <td>{{ item.traffic_condition }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+
+</html>
