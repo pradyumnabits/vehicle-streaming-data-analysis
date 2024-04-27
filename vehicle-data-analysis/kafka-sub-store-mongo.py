@@ -40,7 +40,7 @@ speeding_statistics_drivers = defaultdict(lambda: {"count": 0, "last_timestamp":
 
 def process_trip_data(trip_data):
     try:
-        store_vehicle_movement_data(trip_data)
+        #store_vehicle_movement_data(trip_data)
         if trip_data["speed"] > SPEED_LIMIT:  
             handle_speeding_incident(trip_data)
     except KeyError as e:
