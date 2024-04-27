@@ -14,6 +14,7 @@ mongo_port = 27017  # MongoDB port
 mongo_db_name = "vehicle_movement_db"  # MongoDB database name
 speed_metrics_routes = "speed_metrics_routes"  # MongoDB collection name for routes
 speed_metrics_drivers = "speed_metrics_drivers"  # MongoDB collection name for drivers
+SPEED_LIMIT = 80
 
 # Create Kafka Consumer configuration
 consumer_config = {
@@ -40,9 +41,11 @@ speeding_statistics_drivers = defaultdict(lambda: {"count": 0, "last_timestamp":
 def process_trip_data(trip_data):
     try:
         store_vehicle_movement_data(trip_data)
-        handle_speeding_incident(trip_data)
+        if trip_data["speed"] > SPEED_LIMIT:  
+            handle_speeding_incident(trip_data)
     except KeyError as e:
         print(f"KeyError: {e} in message: {trip_data}")
+
 
 def handle_speeding_incident(trip_data):
     driver_id = trip_data["driver_id"]
@@ -104,32 +107,6 @@ def store_speeding_statistics_routes(route):
         upsert=True
     )
 
-
-# def store_speeding_statistics_drivers(key):
-#     driver_id, vehicle_id, trip_id = key
-
-#     # Fetch the latest count for the driver from the database
-#     existing_record = speed_metrics_drivers_collection.find_one({"driver_id": driver_id})
-#     if existing_record:
-#         count = existing_record.get("speeding_count", 0)
-#         last_timestamp = existing_record.get("last_timestamp")
-#     else:
-#         count = 0
-#         last_timestamp = None
-
-#     # Update the count in the database
-#     speed_metrics_drivers_collection.update_one(
-#         {"driver_id": driver_id},
-#         {
-#             "$set": {
-#                 "speeding_count": count + 1,
-#                 "last_timestamp": speeding_statistics_drivers[key]["last_timestamp"]
-#                 if key in speeding_statistics_drivers
-#                 else last_timestamp
-#             }
-#         },
-#         upsert=True
-#     )
 
 def store_speeding_statistics_drivers(key):
     driver_id, vehicle_id, trip_id = key

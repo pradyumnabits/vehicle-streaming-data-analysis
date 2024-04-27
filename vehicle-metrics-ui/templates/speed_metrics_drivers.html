@@ -69,12 +69,14 @@
     <table>
         <tr>
             <th>Driver ID</th>
+            <th>Driver Name</th>
             <th>Speeding Count</th>
             <th>Last Timestamp</th>
         </tr>
         {% for item in data %}
         <tr>
             <td>{{ item.driver_id }}</td>
+            <td>{{ item.driver_name}}</td>
             <td>{{ item.speeding_count }}</td>
             <td>{{ item.last_timestamp }}</td>
         </tr>
