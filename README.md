@@ -1,2 +1,2 @@
-# vehicle-streaming-data-analysis
+# Vehicle Streaming Data Analysis
 Vehicle streaming data analysis
