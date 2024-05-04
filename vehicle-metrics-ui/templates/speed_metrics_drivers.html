@@ -58,30 +58,73 @@
         .home-link a:hover {
             text-decoration: underline;
         }
+
+        .time-filter {
+            text-align: center;
+            margin-top: 10px;
+        }
     </style>
 </head>
 
 <body>
     <h1>Speed Metrics by Drivers</h1>
-    <div class="home-link">
+    <div class="home-link" style="font-size: 20px;">
         <a href="/">Go To Home Page</a>
     </div>
+    <div class="time-filter" style="font-size: 20px;">
+        <label for="timeRange">Select Time Range:</label>
+        <select id="timeRange" onchange="updateTimeFilter(this.value)">
+            <option value="1">1 Hour</option>
+            <option value="2">2 Hours</option>
+            <option value="4">4 Hours</option>
+            <option value="8">8 Hours</option>
+            <option value="12">12 Hours</option>
+            <option value="16">16 Hours</option>
+            <option value="20">20 Hours</option>
+            <option value="24">24 Hours</option>
+        </select>
+    </div>
+
+    {% if data %}
     <table>
         <tr>
             <th>Driver ID</th>
             <th>Driver Name</th>
             <th>Speeding Count</th>
-            <th>Last Timestamp</th>
         </tr>
         {% for item in data %}
         <tr>
             <td>{{ item.driver_id }}</td>
-            <td>{{ item.driver_name}}</td>
-            <td>{{ item.speeding_count }}</td>
-            <td>{{ item.last_timestamp }}</td>
+            <td>{{ item.driver_name }}</td>
+            <td>{{ item.total_speeding_count }}</td>
         </tr>
         {% endfor %}
     </table>
+    {% else %}
+    <div class="no-data" style="text-align: center; margin-top: 20px; font-size: 25px;">
+        No data available for the selected time range.
+    </div>
+    {% endif %}
+
+
+    <script>
+        // Function to update the URL with the selected time range
+        function updateTimeFilter(hours) {
+            const queryParams = new URLSearchParams(window.location.search);
+            queryParams.set('hours', hours);
+            const newUrl = `${window.location.pathname}?${queryParams.toString()}`;
+            window.location.href = newUrl;
+        }
+         // Set default value of dropdown based on query parameter on page load
+         document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const hoursParam = urlParams.get('hours');
+            if (hoursParam && document.getElementById('timeRange')) {
+                document.getElementById('timeRange').value = hoursParam;
+            }
+        });
+
+    </script>
 </body>
 
 </html>

@@ -3,6 +3,7 @@ import random
 import time
 import paho.mqtt.client as mqtt
 import json
+from datetime import datetime  # Import datetime module
 
 # Initialize Faker library
 fake = Faker()
@@ -58,11 +59,10 @@ def generate_trip_data():
     trip_data = {
         "driver_id": driver_id,
         "vehicle_id": vehicle_id,
-        #"route": fake.street_name(),
         "route": random.choice(route_pool),
         "speed": random.uniform(60, 120),
         "trip_id": trip_id,
-        "timestamp": fake.date_time_this_year(),  # Changed to datetime object
+        "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),  # Use current timestamp
         "longitude": float(fake.longitude()),  # Convert Decimal to float
         "latitude": float(fake.latitude()),  # Convert Decimal to float
         "fuel_level": random.uniform(0, 100),
@@ -72,9 +72,6 @@ def generate_trip_data():
         "weather_condition": random.choice(["Clear", "Rainy", "Snowy"]),
         "traffic_condition": random.choice(["Light", "Moderate", "Heavy"])
     }
-
-    # Format timestamp to human-readable format
-    trip_data["timestamp"] = trip_data["timestamp"].strftime("%Y-%m-%d %H:%M:%S")
     
     return trip_data
 

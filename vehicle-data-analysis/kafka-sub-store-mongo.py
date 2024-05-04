@@ -38,6 +38,56 @@ mongo_collection = mongo_db[mongo_collection_name]
 speeding_statistics_routes = defaultdict(lambda: {"count": 0, "last_timestamp": None})
 speeding_statistics_drivers = defaultdict(lambda: {"count": 0, "last_timestamp": None})
 
+def preprocess_data(trip_data):
+    # Perform data cleansing and quality checks 
+    processed_data = trip_data.copy()  # Create a copy to avoid modifying the original data
+
+    # Handle missing values
+    if processed_data.get("speed") is None:
+        processed_data["speed"] = 0  # Default speed value if missing
+
+    if processed_data.get("fuel_level") is None:
+        processed_data["fuel_level"] = 50  # Default fuel level if missing
+
+    if processed_data.get("tire_pressure") is None:
+        processed_data["tire_pressure"] = 30  # Default tire pressure if missing
+
+    # Handle missing values or data validity checks
+    if processed_data["speed"] < 0:
+        processed_data["speed"] = 0  # Set speed to 0 if negative
+    
+    # Quality Checks - Range Validations
+    # Check speed range
+    if processed_data["speed"] < 0:
+        processed_data["speed"] = 0
+    elif processed_data["speed"] > 150:
+        processed_data["speed"] = 150  # Set maximum speed to 150
+
+    # Check fuel level range
+    if processed_data["fuel_level"] < 0:
+        processed_data["fuel_level"] = 0
+    elif processed_data["fuel_level"] > 100:
+        processed_data["fuel_level"] = 100  # Set maximum fuel level to 100
+
+    # Check tire pressure range
+    if processed_data["tire_pressure"] < 20:
+        processed_data["tire_pressure"] = 20  # Set minimum tire pressure
+    elif processed_data["tire_pressure"] > 50:
+        processed_data["tire_pressure"] = 50  # Set maximum tire pressure
+
+
+    # Transformations - Convert Decimal values to float
+    processed_data["speed"] = float(processed_data["speed"])
+    processed_data["fuel_level"] = float(processed_data["fuel_level"])
+    processed_data["tire_pressure"] = float(processed_data["tire_pressure"])
+    processed_data["longitude"] = float(processed_data["longitude"])
+    processed_data["latitude"] = float(processed_data["latitude"])
+
+    # Perform additional quality checks and transformations as needed
+
+    return processed_data
+
+
 def process_trip_data(trip_data):
     try:
         #store_vehicle_movement_data(trip_data)
@@ -45,6 +95,29 @@ def process_trip_data(trip_data):
             handle_speeding_incident(trip_data)
     except KeyError as e:
         print(f"KeyError: {e} in message: {trip_data}")
+
+
+from datetime import datetime
+
+def store_speeding_statistics(driver_id, driver_name, route, timestamp):
+    # Convert timestamp string to datetime object
+    timestamp_dt = datetime.strptime(timestamp, "%Y-%m-%d %H:%M:%S")
+
+    # Get the collection for storing speeding statistics
+    speeding_statistics_collection = mongo_db["speeding_statistics"]
+
+    # Insert the data into the collection with timestamp as datetime
+    result = speeding_statistics_collection.insert_one({
+        "driver_id": driver_id,
+        "driver_name": driver_name,
+        "route": route,
+        "timestamp": timestamp_dt  # Store timestamp as datetime object
+    })
+
+    if result.inserted_id:
+        print("Speeding statistics stored in the 'speeding_statistics' collection.")
+    else:
+        print("Failed to store speeding statistics.")
 
 
 def handle_speeding_incident(trip_data):
@@ -61,8 +134,11 @@ def handle_speeding_incident(trip_data):
     key = (driver_id, vehicle_id, trip_id)
     speeding_statistics_drivers[key]["last_timestamp"] = timestamp
 
+    # Store speeding statistics
+    store_speeding_statistics(driver_id, get_driver_name(driver_id), route, timestamp)
     store_speeding_statistics_routes(route)
     store_speeding_statistics_drivers(key)
+
 
 def store_vehicle_movement_data(data):
     # Convert Decimal values to float for JSON serialization
@@ -165,7 +241,10 @@ try:
             message_data = msg.value().decode('utf-8')
             try:
                 trip_data = json.loads(message_data, parse_float=decimal.Decimal)
-                process_trip_data(trip_data)
+                # Pre-process trip data
+                processed_trip_data = preprocess_data(trip_data)
+                # Process trip data
+                process_trip_data(processed_trip_data)
             except json.JSONDecodeError as e:
                 print(f"Error decoding JSON message: {message_data}")
             except Exception as e:
