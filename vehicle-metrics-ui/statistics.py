@@ -75,7 +75,7 @@ def speed_metrics_drivers_endpoint():
 
     pipeline = [
         {"$match": {"timestamp": {"$gt": get_timestamp(hours)}}},
-        {"$group": {"_id": {"driver_id": "$driver_id", "driver_name": "$driver_name"}, "total_speeding_count": {"$sum": 1}}},
+        {"$group": {"_id": {"driver_id": "$driver_id", "driver_name": "$driver_name", "vehicle_id": "$vehicle_id"}, "total_speeding_count": {"$sum": 1}}},
         {"$sort": {"total_speeding_count": -1}}
     ]
 
@@ -88,7 +88,7 @@ def speed_metrics_drivers_endpoint():
     logging.debug(f"Retrieved {len(data)} documents from speed_metrics collection for the last {hours} hour(s).")
 
     # Format the data for rendering
-    formatted_data = [{"driver_id": item["_id"]["driver_id"], "driver_name": item["_id"]["driver_name"], "total_speeding_count": item["total_speeding_count"]} for item in data]
+    formatted_data = [{"driver_id": item["_id"]["driver_id"], "driver_name": item["_id"]["driver_name"], "total_speeding_count": item["total_speeding_count"], "vehicle_id": item["_id"]["vehicle_id"]} for item in data]
 
     # Convert data to JSON
     data_json = json.dumps(formatted_data)

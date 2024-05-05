@@ -99,7 +99,7 @@ def process_trip_data(trip_data):
 
 from datetime import datetime
 
-def store_speeding_statistics(driver_id, driver_name, route, timestamp):
+def store_speeding_statistics(driver_id, driver_name, route, timestamp, vehicle_id):
     # Convert timestamp string to datetime object
     timestamp_dt = datetime.strptime(timestamp, "%Y-%m-%d %H:%M:%S")
 
@@ -111,7 +111,8 @@ def store_speeding_statistics(driver_id, driver_name, route, timestamp):
         "driver_id": driver_id,
         "driver_name": driver_name,
         "route": route,
-        "timestamp": timestamp_dt  # Store timestamp as datetime object
+        "timestamp": timestamp_dt,
+        "vehicle_id": vehicle_id
     })
 
     if result.inserted_id:
@@ -135,7 +136,7 @@ def handle_speeding_incident(trip_data):
     speeding_statistics_drivers[key]["last_timestamp"] = timestamp
 
     # Store speeding statistics
-    store_speeding_statistics(driver_id, get_driver_name(driver_id), route, timestamp)
+    store_speeding_statistics(driver_id, get_driver_name(driver_id), route, timestamp, vehicle_id)
     store_speeding_statistics_routes(route)
     store_speeding_statistics_drivers(key)
 

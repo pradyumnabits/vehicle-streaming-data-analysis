@@ -13,8 +13,11 @@ trip_driver_vehicle_pool = []
 for _ in range(100):  # Adjust the range as needed
     trip_id = fake.uuid4()
     driver_id = random.randint(1, 10)
-    vehicle_id = driver_id  # Ensure the vehicle ID is the same as the driver ID
+    vehicle_id_prefix = "ABC"  # Constant alphanumeric prefix for vehicle ID
+    vehicle_id_suffix = str(driver_id).zfill(3)  # Ensure three-digit numeric format
+    vehicle_id = f"{vehicle_id_prefix}-{vehicle_id_suffix}"  # Combine prefix and suffix
     trip_driver_vehicle_pool.append((trip_id, driver_id, vehicle_id))
+
 
 # MQTT Broker details
 broker_address = "localhost"  # Change to your MQTT broker's address if needed

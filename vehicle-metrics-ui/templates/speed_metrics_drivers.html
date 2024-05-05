@@ -91,12 +91,14 @@
             <th>Driver ID</th>
             <th>Driver Name</th>
             <th>Speeding Count</th>
+            <th>Vehicle Number</th>
         </tr>
         {% for item in data %}
         <tr>
             <td>{{ item.driver_id }}</td>
             <td>{{ item.driver_name }}</td>
             <td>{{ item.total_speeding_count }}</td>
+            <td>{{ item.vehicle_id }}</td>
         </tr>
         {% endfor %}
     </table>

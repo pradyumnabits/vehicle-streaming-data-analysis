@@ -81,6 +81,7 @@
             <th>Incident Type</th>
             <th>Weather Condition</th>
             <th>Traffic Condition</th>
+            <th>Vehicle Number</th>
         </tr>
         {% for item in data %}
         <tr>
@@ -97,6 +98,7 @@
             <td>{{ item.incident_type }}</td>
             <td>{{ item.weather_condition }}</td>
             <td>{{ item.traffic_condition }}</td>
+            <td>{{ item.vehicle_id }}</td>
         </tr>
         {% endfor %}
     </table>
